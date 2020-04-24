@@ -26,6 +26,11 @@ app.use(cors);
 app.use(convert(body({
     uploadDir: pathLib.resolve(__dirname, './www/upload') //指定文件上传路径
 })))
+var staticCache = require('koa-static-cache')
+ 
+app.use(staticCache(pathLib.join(__dirname, 'www'), {
+  maxAge: 365 * 24 * 60 * 60
+}))
 app.use(routers);
 
 
