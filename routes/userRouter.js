@@ -43,6 +43,8 @@ router.post('/login', async ctx => {
     if (json.success) {
         let R = await ctx.db.execute(`select password from user_table where username='${username}'`);
         if (R.length == 1 && R[0].password == encode(password)) {
+            ctx.session.user = 1;
+            // console.log(R[0]);
             ctx.body = {'success': true};
         } else {
             ctx.body = {'success': false, 'msg': 'username or password not correct'};

@@ -5,7 +5,7 @@ module.exports = {
     logDir: 'log/access.txt',
     // secureity config
 
-    keys: ['asdfasdf', 'asdfasdfhoasdhuh'],
+    keys: ['asdfasdf asdfasdfhoasdhuh'],
     _key: 'ajsdfpaiosdjfaosdjfoasdjfoajdsfoaijdfoaisd',
 
     // database config
