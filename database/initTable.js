@@ -21,19 +21,23 @@ function generatePostSql(blogDir) {
     let sql = [];
     files.forEach(file => {
         if (file.endsWith('.md')) {
-            let realPath = path.join(blogDir, file);
-            let blog = fs.readFileSync(realPath).toString();
-            let author_id = 1;
-            let title = blog.match(/title: (.+)\n/)[1];
-            let description = blog.match(/- (.*)/m);
-            if (description) description = description[1].slice(0, 50);
-            else description = '';
-            let category = blog.match(/tags: (.+)\n/);
-            if (category) category = category[1];
-            else category = '';
-            let content_url = path.join('blog', file);
-            let item = `('${author_id}', '${title}', '${description}', '${category}', '${content_url}')`;
-            sql.push(item);
+            try {
+                let realPath = path.join(blogDir, file);
+                let blog = fs.readFileSync(realPath).toString();
+                let author_id = 1;
+                let title = blog.match(/title: (.+)\n/)[1];
+                let description = blog.match(/- (.*)/m);
+                if (description) description = description[1].slice(0, 50);
+                else description = '';
+                let category = blog.match(/tags: (.+)\n/);
+                if (category) category = category[1];
+                else category = '';
+                let content_url = path.join('blog', file);
+                let item = `('${author_id}', '${title}', '${description}', '${category}', '${content_url}')`;
+                sql.push(item);
+            } catch (e) {
+                console.log('error post');
+            }
         }
     })
     return sql.join(',');

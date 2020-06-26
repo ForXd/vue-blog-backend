@@ -32,6 +32,24 @@ router.get('/search', async ctx => {
     // console.log(data);
     ctx.body = data;
 })
+// get post category
+router.get('/category', async ctx => {
+    let data = {};
+    data.category = await ctx.db.execute(`select distinct category as name from post_table where category != '';`);
+    ctx.body = data;
+})
+// get post by category
+router.get('/byCategory', async ctx => {
+    let page = ctx.query.page;
+    let category = ctx.query.category;
+    let data = {};
+    data.post = await ctx.db.execute(`select * from post_table where category = '${category}' limit ${(page - 1)*pageCount},${pageCount}`);
+    data.pageCount = page;
+    let postCount = await ctx.db.execute(`select count(*) as count from post_table where category = '${category}'`);
+    data.postCount = postCount[0].count;
+    ctx.body = data;
+})
+
 // create post
 router.post('/', async ctx => {
     let post = JSON.parse(ctx.request.body);

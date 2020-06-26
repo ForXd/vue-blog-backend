@@ -41,11 +41,13 @@ router.post('/login', async ctx => {
     let { username, password } = JSON.parse(ctx.request.body);
     let json = valid_user(username, password);
     if (json.success) {
-        let R = await ctx.db.execute(`select password from user_table where username='${username}'`);
+        let R = await ctx.db.execute(`select * from user_table where username='${username}'`);
         if (R.length == 1 && R[0].password == encode(password)) {
             ctx.session.user = 1;
             // console.log(R[0]);
-            ctx.body = {'success': true};
+            let user = R[0];
+            delete user.password;
+            ctx.body = {'success': true, 'user': user};
         } else {
             ctx.body = {'success': false, 'msg': 'username or password not correct'};
         }
@@ -63,8 +65,8 @@ router.post('/register', async ctx => {
             ctx.body = {'success': false, 'msg': 'username exist'};
         } else {
             let realPassword = encode(password);
-            await ctx.db.execute(`insert into user_table (username, password)values('${username}','${realPassword}')`);
-            ctx.body = {'success': true};
+            let res = await ctx.db.execute(`insert into user_table (username, password)values('${username}','${realPassword}')`);
+            ctx.body = {'success': true, id: res.insertId};
         }
     } else {
         ctx.body = json;
